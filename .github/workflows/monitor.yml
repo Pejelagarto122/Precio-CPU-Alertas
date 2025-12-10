@@ -1,0 +1,27 @@
+name: Monitor de Precios
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"   # cada 15 minutos
+  workflow_dispatch:
+
+jobs:
+  check_price:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Instalar dependencias
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install requests beautifulsoup4
+
+      - name: Ejecutar script
+        env:
+          TG_TOKEN: ${{ secrets.TG_TOKEN }}
+          TG_CHAT_ID: ${{ secrets.TG_CHAT_ID }}
+          PRODUCT_URL: ${{ secrets.PRODUCT_URL }}
+          PRICE_SELECTOR: ${{ secrets.PRICE_SELECTOR }}
+          TARGET_PRICE: ${{ secrets.TARGET_PRICE }}
+        run: python3 monitor.py
